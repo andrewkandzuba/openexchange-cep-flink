@@ -1,10 +1,11 @@
 package io.openexchange.aws.s3
 
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
-import com.amazonaws.services.s3.model.{ListObjectsV2Request, ListObjectsV2Result, S3ObjectSummary}
+import com.amazonaws.services.s3.model.{CSVInput, CompressionType, InputSerialization, OutputSerialization, SelectObjectContentEvent, SelectObjectContentEventVisitor, _}
 import com.amazonaws.{AmazonServiceException, SdkClientException}
 
 class S3Client() {
@@ -38,4 +39,42 @@ class S3Client() {
       case e: SdkClientException => e.printStackTrace()
     }
   }
+
+  def select(bucketName: String, key: String, query: String) : String = {
+    println(query)
+    val response = s3Client.selectObjectContent(generateBaseCSVRequest(bucketName, key, query))
+    val isResultComplete = new AtomicBoolean(false)
+
+    val output : String = try {
+      def inputStream = response.getPayload.getRecordsInputStream(
+        new SelectObjectContentEventVisitor() {
+          override def visit(event: SelectObjectContentEvent.StatsEvent): Unit = {
+            println("Received Stats, Bytes Scanned: " + event.getDetails.getBytesScanned + " Bytes Processed: " + event.getDetails.getBytesProcessed)
+          }
+
+          override def visit(event: SelectObjectContentEvent.EndEvent): Unit = {
+            isResultComplete.set(true)
+            println("Received End Event. Result is complete.")
+          }
+        })
+      scala.io.Source.fromInputStream(inputStream).mkString
+    }
+    finally response.close()
+
+    if (!isResultComplete.get) throw new Exception("S3 Select request was incomplete as End Event was not received.")
+
+    output
+  }
+
+  private def generateBaseCSVRequest(bucketName: String, key: String, query: String): SelectObjectContentRequest =
+    (new SelectObjectContentRequest)
+      .withBucketName(bucketName)
+      .withKey(key)
+      .withExpression(query)
+      .withExpressionType(ExpressionType.SQL)
+      .withInputSerialization((new InputSerialization)
+        .withCsv((new CSVInput).withFileHeaderInfo(FileHeaderInfo.USE))
+        .withCompressionType(CompressionType.NONE))
+      .withOutputSerialization((new OutputSerialization)
+        .withJson(new JSONOutput))
 }
