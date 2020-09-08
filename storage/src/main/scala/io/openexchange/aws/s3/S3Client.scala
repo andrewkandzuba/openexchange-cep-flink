@@ -40,9 +40,15 @@ class S3Client() {
     }
   }
 
-  def select(bucketName: String, key: String, query: String) : String = {
+  def select(bucketName: String, key: String, query: String, inputSerialization: InputSerialization, outputSerialization: OutputSerialization) : String = {
     println(query)
-    val response = s3Client.selectObjectContent(generateBaseCSVRequest(bucketName, key, query))
+    val response = s3Client.selectObjectContent(new SelectObjectContentRequest()
+        .withBucketName(bucketName)
+        .withKey(key)
+        .withExpression(query)
+        .withExpressionType(ExpressionType.SQL)
+        .withInputSerialization(inputSerialization)
+        .withOutputSerialization(outputSerialization))
     val isResultComplete = new AtomicBoolean(false)
 
     val output : String = try {
@@ -66,15 +72,9 @@ class S3Client() {
     output
   }
 
-  private def generateBaseCSVRequest(bucketName: String, key: String, query: String): SelectObjectContentRequest =
-    (new SelectObjectContentRequest)
-      .withBucketName(bucketName)
-      .withKey(key)
-      .withExpression(query)
-      .withExpressionType(ExpressionType.SQL)
-      .withInputSerialization((new InputSerialization)
+  /*.withInputSerialization((new InputSerialization)
         .withCsv((new CSVInput).withFileHeaderInfo(FileHeaderInfo.USE))
         .withCompressionType(CompressionType.NONE))
       .withOutputSerialization((new OutputSerialization)
-        .withJson(new JSONOutput))
+        .withJson(new JSONOutput))*/
 }

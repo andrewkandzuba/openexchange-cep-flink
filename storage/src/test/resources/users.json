@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "ID": 1,
+      "FIRST_NAME": "Andrew",
+      "LAST_NAME": "Johns",
+      "DOB": "02/15/1988",
+      "ZIP": 11111
+    },
+    {
+      "ID": 2,
+      "FIRST_NAME": "Alex",
+      "LAST_NAME": "Miller",
+      "DOB": "05/11/1978",
+      "ZIP": 22222
+    },
+    {
+      "ID": 3,
+      "FIRST_NAME": "Eduard",
+      "LAST_NAME": "Holmes",
+      "DOB": "10/17/2000",
+      "ZIP": 55333
+    }
+  ]
+}
