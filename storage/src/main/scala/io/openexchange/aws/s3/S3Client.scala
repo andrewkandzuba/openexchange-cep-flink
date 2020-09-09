@@ -71,10 +71,4 @@ class S3Client() {
 
     output
   }
-
-  /*.withInputSerialization((new InputSerialization)
-        .withCsv((new CSVInput).withFileHeaderInfo(FileHeaderInfo.USE))
-        .withCompressionType(CompressionType.NONE))
-      .withOutputSerialization((new OutputSerialization)
-        .withJson(new JSONOutput))*/
 }
