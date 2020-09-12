@@ -3,27 +3,24 @@ package io.openexchange.aws.s3
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
 
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import com.amazonaws.services.s3.AmazonS3ClientBuilder
-import com.amazonaws.services.s3.model.{CSVInput, CompressionType, InputSerialization, OutputSerialization, SelectObjectContentEvent, SelectObjectContentEventVisitor, _}
+import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.model.{InputSerialization, OutputSerialization, SelectObjectContentEvent, SelectObjectContentEventVisitor, _}
 import com.amazonaws.{AmazonServiceException, SdkClientException}
 
-class S3Client() {
+import scala.collection.mutable.ListBuffer
 
-  private val s3Client = AmazonS3ClientBuilder.standard()
-    .withCredentials(new EnvironmentVariableCredentialsProvider)
-    .build()
+class S3Client(val amazonS3: AmazonS3) {
 
-  def list(bucketName: String): Unit = {
+  def list(bucketName: String): List[String] = {
+    val list = new ListBuffer[String]()
     try {
       val req = new ListObjectsV2Request().withBucketName(bucketName).withMaxKeys(2)
       var result: ListObjectsV2Result = null
       do {
-        result = s3Client.listObjectsV2(req)
+        result = amazonS3.listObjectsV2(req)
         result.getObjectSummaries.forEach(new Consumer[S3ObjectSummary] {
           override def accept(t: S3ObjectSummary): Unit = {
-            printf(" - %s (size: %d)\n", t.getKey, t.getSize)
-            println()
+            list += " - %s (size: %d)".format(t.getKey, t.getSize)
           }
         })
 
@@ -38,11 +35,12 @@ class S3Client() {
       case e: AmazonServiceException => e.printStackTrace()
       case e: SdkClientException => e.printStackTrace()
     }
+    list.toList
   }
 
   def select(bucketName: String, key: String, query: String, inputSerialization: InputSerialization, outputSerialization: OutputSerialization) : String = {
     println(query)
-    val response = s3Client.selectObjectContent(new SelectObjectContentRequest()
+    val response = amazonS3.selectObjectContent(new SelectObjectContentRequest()
         .withBucketName(bucketName)
         .withKey(key)
         .withExpression(query)
