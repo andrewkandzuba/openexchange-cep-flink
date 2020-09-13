@@ -32,8 +32,8 @@ class S3Client(val amazonS3: AmazonS3) {
 
       } while (result.isTruncated)
     } catch {
-      case e: AmazonServiceException => e.printStackTrace()
-      case e: SdkClientException => e.printStackTrace()
+      case e: AmazonServiceException => e.printStackTrace(); throw e
+      case e: SdkClientException => e.printStackTrace(); throw e
     }
     list.toList
   }
