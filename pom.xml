@@ -80,6 +80,8 @@ under the License.
 		<junit4.version>4.13</junit4.version>
 		<scalatest.version>3.2.2</scalatest.version>
 		<scalamock.version>5.0.0</scalamock.version>
+		<logback.version>1.2.3</logback.version>
+
 		<maven-shade-plugin.version>3.1.1</maven-shade-plugin.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
@@ -175,6 +177,13 @@ under the License.
 				<artifactId>scalamock_${scala.binary.version}</artifactId>
 				<version>${scalamock.version}</version>
 				<scope>test</scope>
+			</dependency>
+
+			<!-- logging -->
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
 			</dependency>
 
 		</dependencies>

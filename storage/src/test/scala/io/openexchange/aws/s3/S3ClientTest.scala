@@ -1,15 +1,22 @@
 package io.openexchange.aws.s3
 
+import java.io.ByteArrayOutputStream
+import java.nio.ByteBuffer
 import java.util
-import java.util.UUID
+import java.util.{Collections, UUID}
 
-import com.amazonaws.{AmazonServiceException, SdkClientException}
+import com.amazonaws.internal.SdkFilterInputStream
 import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.model.{ListObjectsV2Request, ListObjectsV2Result, S3ObjectSummary}
+import com.amazonaws.services.s3.internal.eventstreaming.Message
+import com.amazonaws.services.s3.model._
+import com.amazonaws.services.s3.model.transform.SelectObjectContentEventUnmarshaller
+import com.amazonaws.services.s3.model.transform.SelectObjectContentEventUnmarshaller.{EndEventUnmarshaller, RecordsEventUnmarshaller, StatsEventUnmarshaller}
+import com.amazonaws.{AmazonServiceException, SdkClientException}
+import jdk.internal.net.http.websocket.MessageEncoder
 import org.scalamock.scalatest.MockFactory
 import org.scalatest._
-import matchers.should._
 import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should._
 
 class S3ClientTest extends AnyFlatSpec with MockFactory with Matchers {
 
@@ -67,5 +74,4 @@ class S3ClientTest extends AnyFlatSpec with MockFactory with Matchers {
       s3Client.list("bucketName")
     }
   }
-
 }

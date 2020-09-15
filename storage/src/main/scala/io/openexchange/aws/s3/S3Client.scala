@@ -1,5 +1,6 @@
 package io.openexchange.aws.s3
 
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
 
@@ -38,8 +39,11 @@ class S3Client(val amazonS3: AmazonS3) {
     list.toList
   }
 
-  def select(bucketName: String, key: String, query: String, inputSerialization: InputSerialization, outputSerialization: OutputSerialization) : String = {
+  def select(bucketName: String, key: String, query: String, inputSerialization: InputSerialization, outputSerialization: OutputSerialization) : List[String] = {
+    val output = new ListBuffer[String]()
+
     println(query)
+
     val response = amazonS3.selectObjectContent(new SelectObjectContentRequest()
         .withBucketName(bucketName)
         .withKey(key)
@@ -49,7 +53,7 @@ class S3Client(val amazonS3: AmazonS3) {
         .withOutputSerialization(outputSerialization))
     val isResultComplete = new AtomicBoolean(false)
 
-    val output : String = try {
+    try {
       def inputStream = response.getPayload.getRecordsInputStream(
         new SelectObjectContentEventVisitor() {
           override def visit(event: SelectObjectContentEvent.StatsEvent): Unit = {
@@ -60,6 +64,12 @@ class S3Client(val amazonS3: AmazonS3) {
             isResultComplete.set(true)
             println("Received End Event. Result is complete.")
           }
+
+          override def visit(event: SelectObjectContentEvent.RecordsEvent): Unit = {
+            val s = StandardCharsets.UTF_8.decode(event.getPayload).toString
+            println("Received record: " + s)
+            output += s
+          }
         })
       scala.io.Source.fromInputStream(inputStream).mkString
     }
@@ -67,6 +77,6 @@ class S3Client(val amazonS3: AmazonS3) {
 
     if (!isResultComplete.get) throw new Exception("S3 Select request was incomplete as End Event was not received.")
 
-    output
+    output.toList
   }
 }
