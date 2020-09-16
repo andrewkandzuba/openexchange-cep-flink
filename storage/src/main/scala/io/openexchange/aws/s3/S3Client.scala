@@ -38,7 +38,7 @@ class S3Client(val amazonS3: AmazonS3) {
     }
     list.toList
   }
-
+  
   def select(bucketName: String, key: String, query: String, inputSerialization: InputSerialization, outputSerialization: OutputSerialization) : List[String] = {
     val output = new ListBuffer[String]()
 

@@ -16,10 +16,10 @@ object Application {
     val s3Client = new S3Client(AmazonS3ClientBuilder.standard()
       .withCredentials(new EnvironmentVariableCredentialsProvider)
       .build())
-    val list = s3Client.list(bucketName)
+/*    val list = s3Client.list(bucketName)
     list.foreach {
       println
-    }
+    }*/
 
 
     val csvFile = "users.csv"
