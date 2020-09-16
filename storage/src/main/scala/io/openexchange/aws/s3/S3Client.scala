@@ -38,19 +38,19 @@ class S3Client(val amazonS3: AmazonS3) {
     }
     list.toList
   }
-  
-  def select(bucketName: String, key: String, query: String, inputSerialization: InputSerialization, outputSerialization: OutputSerialization) : List[String] = {
+
+  def select(bucketName: String, key: String, query: String, inputSerialization: InputSerialization, outputSerialization: OutputSerialization): List[String] = {
     val output = new ListBuffer[String]()
 
     println(query)
 
     val response = amazonS3.selectObjectContent(new SelectObjectContentRequest()
-        .withBucketName(bucketName)
-        .withKey(key)
-        .withExpression(query)
-        .withExpressionType(ExpressionType.SQL)
-        .withInputSerialization(inputSerialization)
-        .withOutputSerialization(outputSerialization))
+      .withBucketName(bucketName)
+      .withKey(key)
+      .withExpression(query)
+      .withExpressionType(ExpressionType.SQL)
+      .withInputSerialization(inputSerialization)
+      .withOutputSerialization(outputSerialization))
     val isResultComplete = new AtomicBoolean(false)
 
     try {
@@ -71,6 +71,7 @@ class S3Client(val amazonS3: AmazonS3) {
             output += s
           }
         })
+
       scala.io.Source.fromInputStream(inputStream).mkString
     }
     finally response.close()

@@ -16,22 +16,22 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>io.openexchange</groupId>
-		<artifactId>openexchange-cep-flink</artifactId>
-		<version>1.0-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>io.openexchange</groupId>
+        <artifactId>openexchange-cep-flink</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
-	<artifactId>cep-it</artifactId>
-	<name>cep-it</name>
-	<packaging>jar</packaging>
+    <artifactId>cep-it</artifactId>
+    <name>cep-it</name>
+    <packaging>jar</packaging>
 
-	<dependencies>
+    <dependencies>
         <dependency>
             <groupId>io.openexchange</groupId>
             <artifactId>storage</artifactId>
@@ -46,8 +46,8 @@ under the License.
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_${scala.binary.version}</artifactId>
         </dependency>
-		<!-- Amazon dependencies -->
-		<!-- dependency>
+        <!-- Amazon dependencies -->
+        <!-- dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
         </dependency>
