@@ -1,8 +1,9 @@
-package io.openexchange.aws.s3
+package io.openexchage.aws.s3
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model._
+import io.openexchange.aws.s3.S3Client
 
 object Application {
   private val csvInputSerialization = new InputSerialization().withCsv(new CSVInput().withFileHeaderInfo(FileHeaderInfo.USE)).withCompressionType(CompressionType.NONE)
@@ -15,10 +16,10 @@ object Application {
     val s3Client = new S3Client(AmazonS3ClientBuilder.standard()
       .withCredentials(new EnvironmentVariableCredentialsProvider)
       .build())
-    val list = s3Client.list(bucketName)
-    list.foreach {
-      println
-    }
+    /*    val list = s3Client.list(bucketName)
+        list.foreach {
+          println
+        }*/
 
 
     val csvFile = "users.csv"
