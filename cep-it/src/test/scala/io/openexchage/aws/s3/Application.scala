@@ -16,12 +16,11 @@ object Application {
     val s3Client = new S3Client(AmazonS3ClientBuilder.standard()
       .withCredentials(new EnvironmentVariableCredentialsProvider)
       .build())
-    /*    val list = s3Client.list(bucketName)
+    val list = s3Client.list(bucketName)
         list.foreach {
           println
-        }*/
-
-
+        }
+    
     val csvFile = "users.csv"
     val selectFromCsvQuery = "select s.ID,s.LAST_NAME from S3Object s WHERE s.FIRST_NAME='David'"
     val json = s3Client.select(bucketName, csvFile, selectFromCsvQuery, csvInputSerialization, jsonOutputSerialization)
