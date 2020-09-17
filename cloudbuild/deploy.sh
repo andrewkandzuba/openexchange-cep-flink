@@ -2,4 +2,4 @@
 
 gpg --fast-import /root/.gpg/gpg.key
 cp /jar/pipeline-*.jar pipeline/target/
-mvn deploy -P sign,build-extras,docker -DskipTests=true --settings cd/mvnsettings.xml
+mvn deploy -P sign,build-extras,docker -DskipTests=true --settings cloudbuild/mvnsettings.xml
