@@ -1,0 +1,98 @@
+# Decrypt the file containing the key
+steps:
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - kms
+      - decrypt
+      - --ciphertext-file=cloudbuild/id_rsa.enc
+      - --plaintext-file=/root/.ssh/id_rsa
+      - --location=global
+      - --keyring=id-rsa-keyring
+      - --key=github-key
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+
+  # Set up git with key and domain
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        chmod 600 /root/.ssh/id_rsa
+        cat <<EOF >/root/.ssh/config
+        Hostname github.com
+        IdentityFile /root/.ssh/id_rsa
+        EOF
+        mv cloudbuild/known_hosts /root/.ssh/known_hosts
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+
+  # Connect to the repository
+  - name: 'gcr.io/cloud-builders/git'
+    args:
+      - clone
+      - git@github.com:$_GIT_USER/$REPO_NAME
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+
+  # Test project
+  - name: maven:3.6.3-jdk-13
+    entrypoint: 'mvn'
+    args: ['test', "-P", "!build-extras", "-B", "-Djacoco.check.coverage.minimal=$_MIN_COVERAGE"]
+
+  # Build project and copy artifacts to /jar
+  - name: maven:3.6.3-jdk-13
+    entrypoint: bash
+    args: ['./cloudbuild/build.sh']
+    volumes:
+      - name: 'jar'
+        path: /jar
+
+  # Before deploy
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - kms
+      - decrypt
+      - --ciphertext-file=cloudbuild/gpg.key.enc
+      - --plaintext-file=/root/.gpg/gpg.key
+      - --location=global
+      - --keyring=gpg-keyring
+      - --key=gpg-key
+    volumes:
+      - name: 'gnupg'
+        path: /root/.gpg
+
+  # Deploy
+  - name: maven:3.6.3-jdk-13
+    entrypoint: bash
+    args: ['-c', './cloudbuild/deploy.sh']
+    volumes:
+      - name: 'jar'
+        path: /jar
+      - name: 'gnupg'
+        path: /root/.gpg
+    env:
+      - '_OSSRH_JIRA_USERNAME=$_OSSRH_JIRA_USERNAME'
+      - '_DOCKER_USERNAME=$_DOCKER_USERNAME'
+    secretEnv:
+      - '_OSSRH_JIRA_PASSWORD_SECRET'
+      - '_DOCKER_PASSWORD_SECRET'
+      - '_GPG_KEY_SECRET'
+      - '_GPG_PASSPHRASE_SECRET'
+
+secrets:
+  - kmsKeyName: projects/gi-gae/locations/global/keyRings/gpg-keyring/cryptoKeys/ossh-pw-key
+    secretEnv:
+      _OSSRH_JIRA_PASSWORD_SECRET: CiQAyc/RE73Kd6Su8ynDudCrgLpy7ZQAw1UdSKJlghuY6vG6nE4SOwAshiJvXpUdwo0mVMMinF/3U69W7BAdDDsjseEFX7iIQpg4Ei3gBdX6KVWvODQYD13g9M7/HjdJV1Dy
+  - kmsKeyName: projects/gi-gae/locations/global/keyRings/gpg-keyring/cryptoKeys/docker-pw-key
+    secretEnv:
+      _DOCKER_PASSWORD_SECRET: CiQANmEf11hCmH7Qgw9Prffu6zWGBLmQeLlZhLwy4DWLerkng5kSOgC42lykJ+FanHqfIYoM0uTaFf+HOYN4tcBLNsABWwh2txOQOy7OBYnyFxAK1O2767HqtcwZkS3ltFg=
+  - kmsKeyName: projects/gi-gae/locations/global/keyRings/gpg-keyring/cryptoKeys/gpg-key
+    secretEnv:
+      _GPG_KEY_SECRET: CiQAjqMjqtYe6B3XlC5hNwuPYWGmUhfF/doEuMRixBePLAW6qH0SOgCB8Y10tZWy4M2B2sq0iWhkqqXIYghUCe/qh5v4prkRNTJn3Kt60FM6OdGKw2N7s7ngvBh67isN9lo=
+  - kmsKeyName: projects/gi-gae/locations/global/keyRings/gpg-keyring/cryptoKeys/gpg-pw
+    secretEnv:
+      _GPG_PASSPHRASE_SECRET: CiQAnYbZ8I5xBLLKwD6LYZv4MVMZlJm7EcdqouYn/MdjA+z1kUUSOwDfdPs1gL+cCvCCYVKFRNCsTPCH/y2O75WQtPmtVas/22aHwb6bCt54W5huc4LG4kZNeikdO/pRuggm
