@@ -537,6 +537,7 @@ under the License.
     <modules>
         <module>pipeline</module>
         <module>storage</module>
+        <module>noaa</module>
         <module>cep-it</module>
     </modules>
 </project>
