@@ -98,7 +98,7 @@ under the License.
         <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
         <maven-surefire-plugin.version>2.7</maven-surefire-plugin.version>
         <scalatest-maven-plugin.version>1.0</scalatest-maven-plugin.version>
-        <maven.jacoco.plugin.version>0.8.5</maven.jacoco.plugin.version>
+        <maven.jacoco.plugin.version>0.8.6</maven.jacoco.plugin.version>
         <jacoco.check.coverage.minimal>0.85</jacoco.check.coverage.minimal>
         <maven.scm.plugin.version>1.11.2</maven.scm.plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>

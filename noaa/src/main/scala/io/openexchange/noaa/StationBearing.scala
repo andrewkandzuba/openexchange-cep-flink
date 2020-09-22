@@ -1,17 +1,17 @@
 package io.openexchange.noaa
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 
-case class StationBearing(station: String,
-                          date: LocalDate,
+final case class StationBearing(station: String,
+                          observationDate: LocalDateTime,
                           reportType: String,
-                          source: String,
-                          hourlyAltimeterSetting: String,
-                          hourlyDewPointTemperature: String,
-                          hourlyDryBulbTemperature: String,
-                          hourlyPrecipitation: String,
+                          observationSource: String,
+                          hourlyAltimeterSetting: Double,
+                          hourlyDewPointTemperature: Int,
+                          hourlyDryBulbTemperature: Int,
+                          hourlyPrecipitation: Double,
                           hourlyRelativeHumidity: Double,
-                          hourlySeaLevelPressure: Int,
+                          hourlySeaLevelPressure: Double,
                           hourlySkyConditions: String,
                           hourlyStationPressure: Double,
                           hourlyVisibility: Double,

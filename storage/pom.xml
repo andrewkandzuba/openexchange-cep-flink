@@ -32,6 +32,11 @@ under the License.
     <packaging>jar</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>io.openexchange</groupId>
+            <artifactId>noaa</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
         <!-- Amazon dependencies -->
         <dependency>
             <groupId>com.amazonaws</groupId>
