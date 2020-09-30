@@ -568,6 +568,9 @@ under the License.
                 <groupId>org.scoverage</groupId>
                 <artifactId>scoverage-maven-plugin</artifactId>
                 <version>${scoverage.plugin.version}</version>
+                <configuration>
+                    <aggregate>true</aggregate> <!-- for aggregated report -->
+                </configuration>
                 <reportSets>
                     <reportSet>
                         <reports>
