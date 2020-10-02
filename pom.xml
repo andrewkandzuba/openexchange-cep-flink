@@ -104,7 +104,7 @@ under the License.
         <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
 
         <!-- testing plugins -->
-        <jacoco.check.coverage.minimal>0.85</jacoco.check.coverage.minimal>
+        <test.coverage.minimal>0.85</test.coverage.minimal>
         <scalatest-maven-plugin.version>1.0</scalatest-maven-plugin.version>
         <scoverage.plugin.version>1.4.0</scoverage.plugin.version>
         <scoverage.scalacPluginVersion>1.4.0</scoverage.scalacPluginVersion>
@@ -466,56 +466,6 @@ under the License.
             </plugins>
         </pluginManagement>
         <plugins>
-            <!-- plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${maven.jacoco.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <configuration>
-                            <dataFile>target/jacoco.exec</dataFile>
-                            <outputDirectory>target/jacoco-ut</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>default-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <rule>
-                                    <element>BUNDLE</element>
-                                    <limits>
-                                        <limit>
-                                            <counter>COMPLEXITY</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>${jacoco.check.coverage.minimal}</minimum>
-                                        </limit>
-                                    </limits>
-                                </rule>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin -->
             <plugin>
                 <groupId>org.scoverage</groupId>
                 <artifactId>scoverage-maven-plugin</artifactId>
@@ -525,7 +475,7 @@ under the License.
                     <scalacPluginVersion>${scoverage.scalacPluginVersion}</scalacPluginVersion>
                     <aggregate>true</aggregate>
                     <highlighting>true</highlighting>
-                    <minimumCoverage>${jacoco.check.coverage.minimal}</minimumCoverage>
+                    <minimumCoverage>${test.coverage.minimal}</minimumCoverage>
                     <failOnMinimumCoverage>true</failOnMinimumCoverage>
                     <additionalForkedProjectProperties>skipTests=false</additionalForkedProjectProperties>
                 </configuration>

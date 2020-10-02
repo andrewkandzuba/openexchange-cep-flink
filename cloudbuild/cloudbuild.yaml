@@ -41,7 +41,9 @@ steps:
   # Test project
   - name: maven:3.6.3-jdk-13
     entrypoint: 'mvn'
-    args: ['test', "-P", "!build-extras", "-B", "-Djacoco.check.coverage.minimal=$_MIN_COVERAGE"]
+    args: ['test', 'scoverage:report','scoverage:check', '-Dtest.coverage.minimal=$_MIN_COVERAGE','-B', '--fail-at-end']
+    env:
+      - '_MIN_COVERAGE=$_MIN_COVERAGE'
 
   # Build project and copy artifacts to /jar
   - name: maven:3.6.3-jdk-13
