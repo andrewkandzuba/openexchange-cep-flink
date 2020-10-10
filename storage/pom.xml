@@ -35,7 +35,7 @@ under the License.
         <dependency>
             <groupId>io.openexchange</groupId>
             <artifactId>noaa</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <!-- Amazon dependencies -->
         <dependency>
