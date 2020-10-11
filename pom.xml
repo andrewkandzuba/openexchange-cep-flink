@@ -119,8 +119,6 @@ under the License.
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.organization>andrewkandzuba</sonar.organization>
         <sonar.language>scala</sonar.language>
-        <sonar.sources>src/main/scala</sonar.sources>
-        <sonar.tests>src/test/scala</sonar.tests>
         <sonar.junit.reportPaths>${project.build.directory}/surefire-reports</sonar.junit.reportPaths>
         <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
         <sonar.scala.version>${scala.binary.version}</sonar.scala.version>
