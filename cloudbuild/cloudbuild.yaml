@@ -41,9 +41,11 @@ steps:
   # Test project
   - name: maven:3.6.3-jdk-13
     entrypoint: 'mvn'
-    args: ['test', 'scoverage:report','scoverage:check', '-Dtest.coverage.minimal=$_MIN_COVERAGE','-B', '--fail-at-end']
+    args: ['clean', 'scoverage:check', 'scoverage:report', 'sonar:sonar', '-Dsonar.login=$_SONAR_TOKEN_SECRET', '-Dsonar.branch.name=$BRANCH_NAME', '-Dscoverage.minimumCoverage=$_MIN_COVERAGE', '-B' '--fail-at-end']
     env:
       - '_MIN_COVERAGE=$_MIN_COVERAGE'
+    secretEnv:
+      - '_SONAR_TOKEN_SECRET'
 
   # Build project and copy artifacts to /jar
   - name: maven:3.6.3-jdk-13
@@ -98,3 +100,6 @@ secrets:
   - kmsKeyName: projects/gi-gae/locations/global/keyRings/gpg-keyring/cryptoKeys/gpg-pw
     secretEnv:
       _GPG_PASSPHRASE_SECRET: CiQAnYbZ8I5xBLLKwD6LYZv4MVMZlJm7EcdqouYn/MdjA+z1kUUSOwDfdPs1gL+cCvCCYVKFRNCsTPCH/y2O75WQtPmtVas/22aHwb6bCt54W5huc4LG4kZNeikdO/pRuggm
+  - kmsKeyName: projects/gi-gae/locations/global/keyRings/openexchange-gcb-secrets-keyring/cryptoKeys/sonar-token-key
+    secretEnv:
+      _SONAR_TOKEN_SECRET: CiQARM/6fvHnkJb39ZWgn6TtyEJQan1cj2gGDfj31qh1R4ZqWLwSUgDbN/RXwdjqBkpGnFOd0dEQ6DK9QlXoFz8uH5MAdefayMzL9FwMmdgmggTvz2m0pwBn/3wecXpFhDLyBJZAIcX3wh+nbwCL/7C54+X+jRkygWE=

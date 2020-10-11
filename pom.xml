@@ -107,10 +107,9 @@ under the License.
         <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
 
         <!-- testing plugins -->
-        <test.coverage.minimal>0.85</test.coverage.minimal>
         <scalatest-maven-plugin.version>1.0</scalatest-maven-plugin.version>
-        <scoverage.plugin.version>1.4.0</scoverage.plugin.version>
-        <scoverage.scalacPluginVersion>1.4.0</scoverage.scalacPluginVersion>
+        <scoverage.plugin.version>1.4.1</scoverage.plugin.version>
+        <scoverage.scalacPluginVersion>1.4.1</scoverage.scalacPluginVersion>
 
         <!-- test code coverage reporting -->
         <project-info-reports.plugin.version>3.0.0</project-info-reports.plugin.version>
@@ -491,17 +490,17 @@ under the License.
                     <scalacPluginVersion>${scoverage.scalacPluginVersion}</scalacPluginVersion>
                     <aggregate>true</aggregate>
                     <highlighting>true</highlighting>
-                    <minimumCoverage>${test.coverage.minimal}</minimumCoverage>
+                    <minimumCoverage>0.85</minimumCoverage>
                     <failOnMinimumCoverage>true</failOnMinimumCoverage>
                     <additionalForkedProjectProperties>skipTests=false</additionalForkedProjectProperties>
                 </configuration>
                 <executions>
                     <execution>
                         <id>test</id>
-                        <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <phase>test</phase>
                     </execution>
                     <execution>
                         <id>prepare-package</id>
@@ -513,16 +512,13 @@ under the License.
                     <execution>
                         <id>instrument</id>
                         <goals>
-                            <!-- used to add instrumentation -->
                             <goal>pre-compile</goal>
-                            <!-- used to remove instrumentation for testCompile -->
                             <goal>post-compile</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>scoverage-report</id>
                         <goals>
-                            <!-- Needed for Sonar -->
                             <goal>report-only</goal>
                         </goals>
                         <phase>prepare-package</phase>
@@ -551,7 +547,7 @@ under the License.
                 <artifactId>scoverage-maven-plugin</artifactId>
                 <version>${scoverage.plugin.version}</version>
                 <configuration>
-                    <aggregate>true</aggregate> <!-- for aggregated report -->
+                    <aggregate>true</aggregate>
                 </configuration>
                 <reportSets>
                     <reportSet>
