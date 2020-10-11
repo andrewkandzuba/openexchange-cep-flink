@@ -46,10 +46,7 @@ steps:
     env:
       - 'SONAR_TOKEN=$$_SONAR_TOKEN_SECRET'
     secretEnv:
-      - '_OSSRH_JIRA_PASSWORD_SECRET'
-      - '_DOCKER_PASSWORD_SECRET'
-      - '_GPG_KEY_SECRET'
-      - '_GPG_PASSPHRASE_SECRET'
+      - '_SONAR_TOKEN_SECRET'
 
   # Test project
   - name: maven:3.6.3-jdk-13
