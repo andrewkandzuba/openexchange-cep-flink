@@ -114,6 +114,19 @@ under the License.
 
         <!-- test code coverage reporting -->
         <project-info-reports.plugin.version>3.0.0</project-info-reports.plugin.version>
+
+        <!-- sonar and sonarcloud -->
+        <!-- Optional URL to server. Default value is http://localhost:9000 -->
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.organization>andrewkandzuba</sonar.organization>
+        <sonar.language>scala</sonar.language>
+        <sonar.sources>src/main/scala</sonar.sources>
+        <sonar.tests>src/test/scala</sonar.tests>
+        <sonar.junit.reportPaths>${project.build.directory}/surefire-reports</sonar.junit.reportPaths>
+        <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
+        <sonar.scala.version>${scala.binary.version}</sonar.scala.version>
+        <sonar.scala.coverage.reportPaths>${project.build.directory}/scoverage.xml</sonar.scala.coverage.reportPaths>
+        <sonar.scala.coveragePlugin>scoverage</sonar.scala.coveragePlugin>
     </properties>
 
     <dependencyManagement>
@@ -533,7 +546,6 @@ under the License.
                     </reportSet>
                 </reportSets>
             </plugin>
-
             <plugin>
                 <groupId>org.scoverage</groupId>
                 <artifactId>scoverage-maven-plugin</artifactId>
