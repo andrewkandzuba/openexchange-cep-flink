@@ -49,7 +49,7 @@ steps:
   # Test project
   - name: maven:3.6.3-jdk-13
     entrypoint: bash
-    qargs: ['./cloudbuild/sonar.sh']
+    args: ['./cloudbuild/sonar.sh']
     env:
       - '_MIN_COVERAGE=$_MIN_COVERAGE'
     secretEnv:
