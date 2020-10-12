@@ -38,15 +38,10 @@ steps:
       - name: 'ssh'
         path: /root/.ssh
 
-  # Debug
+  # Init git in the local directory
   - name: 'gcr.io/cloud-builders/git'
-    entrypoint: 'bash'
     args:
-      - '-c'
-      - |
-        pwd
-        ls -las
-        git init
+      - init
     volumes:
       - name: 'ssh'
         path: /root/.ssh
