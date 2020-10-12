@@ -79,7 +79,7 @@ under the License.
         <maven.compiler.target>13</maven.compiler.target>
         <maven.compiler.source>13</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <flink.version>1.10.1</flink.version>
+        <flink.version>1.11.2</flink.version>
         <scala.binary.version>2.11</scala.binary.version>
         <scala.version>2.11.12</scala.version>
         <aws.sdk.version>1.11.837</aws.sdk.version>
@@ -149,6 +149,14 @@ under the License.
                 <artifactId>flink-streaming-scala_${scala.binary.version}</artifactId>
                 <version>${flink.version}</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <!-- Flink testing -->
+            <dependency>
+                <groupId>org.apache.flink</groupId>
+                <artifactId>flink-test-utils_${scala.binary.version}</artifactId>
+                <version>${flink.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- Scala Library, provided by Flink as well. -->
