@@ -41,11 +41,12 @@ steps:
   # Debug
   - name: 'gcr.io/cloud-builders/git'
     entrypoint: 'bash'
-  args:
-    - '-c'
-    - |
-      pwd
-      ls -las
+    args:
+      - '-c'
+      - |
+        pwd
+        ls -las
+        git init
     volumes:
       - name: 'ssh'
         path: /root/.ssh
