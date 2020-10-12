@@ -52,6 +52,7 @@ steps:
     args: ['./cloudbuild/sonar.sh']
     env:
       - '_MIN_COVERAGE=$_MIN_COVERAGE'
+      - '_BRANCH_NAME=$BRANCH_NAME'
     secretEnv:
       - '_SONAR_TOKEN_SECRET'
 
