@@ -38,6 +38,14 @@ steps:
       - name: 'ssh'
         path: /root/.ssh
 
+  # Debug
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args: ['ls', '-las']
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+
   # Test project
   - name: maven:3.6.3-jdk-13
     entrypoint: 'mvn'
