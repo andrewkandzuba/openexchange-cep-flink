@@ -30,5 +30,10 @@ object Application {
     val selectFromJsonQuery = "select s.ID,s.LAST_NAME from S3Object[*].users[*] s WHERE s.FIRST_NAME='Alex'"
     val csv = s3Client.select(bucketName, jsonFile, selectFromJsonQuery, jsonInputSerialization, csvOutputSerialization)
     println(csv)
+
+    val noaaFile = "2287462.csv"
+    val selectWeatherQuery = "select s.STATION,s.OBSETVATIONDATE,s.REPORTTYPE,s.HourlyAltimeterSetting from s3object s limit 5"
+    val bearings = s3Client.select(bucketName, noaaFile, selectWeatherQuery, csvInputSerialization, jsonOutputSerialization)
+    println(bearings)
   }
 }

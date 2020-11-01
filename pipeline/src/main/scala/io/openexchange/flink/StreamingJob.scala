@@ -18,6 +18,10 @@
 
 package io.openexchange.flink
 
+import java.util
+
+import io.openexchange.flink.function.IncrementMapFunction
+import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala._
 
 /**
@@ -32,32 +36,34 @@ import org.apache.flink.streaming.api.scala._
  * If you change the name of the main class (with the public static void main(String[] args))
  * method, change the respective entry in the POM.xml file (simply search for 'mainClass').
  */
-object StreamingJob {
-  def main(args: Array[String]) {
-    // set up the streaming execution environment
-    val env = StreamExecutionEnvironment.getExecutionEnvironment
+object StreamingJob extends App {
+  // set up the streaming execution environment
+  val env = StreamExecutionEnvironment.getExecutionEnvironment
 
-    /*
-     * Here, you can start creating your execution plan for Flink.
-     *
-     * Start with getting some data from the environment, like
-     *  env.readTextFile(textPath);
-     *
-     * then, transform the resulting DataStream[String] using operations
-     * like
-     *   .filter()
-     *   .flatMap()
-     *   .join()
-     *   .group()
-     *
-     * and many more.
-     * Have a look at the programming guide:
-     *
-     * https://flink.apache.org/docs/latest/apis/streaming/index.html
-     *
-     */
+  env.setParallelism(2)
 
-    // execute program
-    env.execute("Flink Streaming Scala API Skeleton")
+  // values are collected in a static variable
+  CollectSink.values.clear()
+
+  // create a stream of custom elements and apply transformations
+  env.fromElements(1L, 21L, 22L)
+    .map(new IncrementMapFunction())
+    .addSink(new CollectSink())
+
+  // execute program
+  env.executeAsync("Flink Streaming Scala API Skeleton")
+}
+
+class CollectSink extends SinkFunction[Long] {
+
+  override def invoke(value: Long, context: SinkFunction.Context[_]): Unit = {
+    synchronized {
+      CollectSink.values.add(value)
+    }
   }
+}
+
+object CollectSink {
+  // must be static
+  val values: util.List[Long] = new util.ArrayList()
 }
