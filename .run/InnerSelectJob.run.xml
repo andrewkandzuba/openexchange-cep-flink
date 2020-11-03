@@ -1,9 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="StreamingJob" type="Application" factoryName="Application">
+  <configuration default="false" name="InnerSelectJob" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
-    <option name="MAIN_CLASS_NAME" value="io.openexchange.flink.StreamingJob" />
+    <option name="MAIN_CLASS_NAME" value="io.openexchange.flink.InnerSelectJob" />
     <module name="pipeline" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pipeline" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="io.openexchange.flink.*" />
