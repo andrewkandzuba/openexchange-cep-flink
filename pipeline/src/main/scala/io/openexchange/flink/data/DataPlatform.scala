@@ -1,6 +1,6 @@
 package io.openexchange.flink.data
 
-import io.openexchange.flink.model.{Instrument, Underlay}
+import io.openexchange.flink.model.{Instrument, Underlayer}
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 
 object DataPlatform {
@@ -10,10 +10,12 @@ object DataPlatform {
     Instrument(3, 4),
     Instrument(4, 0, isSpecial = true),
     Instrument(5, 3, isSpecial = true),
-    Instrument(6, 1, isSpecial = true)
+    Instrument(6, 1, isSpecial = true),
+    Instrument(7, 3, isSpecial = true),
+    Instrument(8, 11, isSpecial = true)
   )
 
-  def underlaysSink(): SinkFunction[Underlay] = new UnderlaysSink
+  def underlayersSink(): SinkFunction[Underlayer] = new UnderlayersSink
 
   def instrumentsSink() : SinkFunction[Instrument] = new InstrumentsSink
 }

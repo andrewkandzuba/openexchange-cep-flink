@@ -1,7 +1,7 @@
 package io.openexchange.flink
 
-import io.openexchange.flink.data.{InstrumentsSink, UnderlaysSink}
-import io.openexchange.flink.model.{Instrument, Underlay}
+import io.openexchange.flink.data.{InstrumentsSink, UnderlayersSink}
+import io.openexchange.flink.model.{Instrument, Underlayer}
 import org.apache.flink.runtime.testutils.MiniClusterResourceConfiguration
 import org.apache.flink.test.util.MiniClusterWithClientResource
 import org.scalatest.BeforeAndAfter
@@ -24,10 +24,10 @@ class InnerSelectJobIntegrationTest extends AnyFlatSpec with Matchers with Befor
   }
 
   "UnderlayFlatMapFunction" should "flatMap" in {
-    UnderlaysSink.values.clear()
+    UnderlayersSink.values.clear()
     InnerSelectJob.main(Array())
     Thread.sleep(10000)
-    UnderlaysSink.values should contain allOf(Underlay.apply(1), Underlay.apply(3))
+    UnderlayersSink.values should contain allOf(Underlayer.apply(1), Underlayer.apply(3))
     InstrumentsSink.values should contain allOf(Instrument.apply(1, 0), Instrument.apply(3, 4))
   }
 }

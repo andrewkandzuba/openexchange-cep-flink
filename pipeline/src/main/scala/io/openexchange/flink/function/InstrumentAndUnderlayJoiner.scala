@@ -1,33 +1,33 @@
 package io.openexchange.flink.function
 
-import io.openexchange.flink.model.{Instrument, Underlay}
+import io.openexchange.flink.model.{Instrument, Underlayer}
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.streaming.api.functions.co.RichCoFlatMapFunction
 import org.apache.flink.util.Collector
 
-class InstrumentAndUnderlayJoiner extends RichCoFlatMapFunction[Instrument, Underlay, Instrument] {
+class InstrumentAndUnderlayJoiner extends RichCoFlatMapFunction[Instrument, Underlayer, Instrument] {
 
   lazy val instrumentState: ValueState[Instrument] =
     getRuntimeContext.getState(new ValueStateDescriptor[Instrument]("instrumentState", classOf[Instrument]))
-  lazy val underlayState: ValueState[Underlay] =
-    getRuntimeContext.getState(new ValueStateDescriptor[Underlay]("underlayState", classOf[Underlay]))
+  lazy val underlayerState: ValueState[Underlayer] =
+    getRuntimeContext.getState(new ValueStateDescriptor[Underlayer]("underlayerState", classOf[Underlayer]))
 
-  override def flatMap1(in1: Instrument, collector: Collector[Instrument]): Unit = {
-    val underlay = underlayState.value();
-    if (underlay != null) {
-      underlayState.clear()
-      collector.collect(in1)
+  override def flatMap1(instrument: Instrument, collector: Collector[Instrument]): Unit = {
+    val underlayer = underlayerState.value();
+    if (underlayer != null) {
+      underlayerState.clear()
+      collector.collect(instrument)
     } else
-      instrumentState.update(in1)
+      instrumentState.update(instrument)
   }
 
-  override def flatMap2(in2: Underlay, collector: Collector[Instrument]): Unit = {
+  override def flatMap2(underlayer: Underlayer, collector: Collector[Instrument]): Unit = {
     val instrument = instrumentState.value()
     if (instrument != null) {
       instrumentState.clear()
       collector.collect(instrument)
     } else {
-      underlayState.update(in2)
+      underlayerState.update(underlayer)
     }
   }
 }

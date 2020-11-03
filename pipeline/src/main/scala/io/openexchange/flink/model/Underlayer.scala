@@ -1,3 +1,3 @@
 package io.openexchange.flink.model
 
-case class Underlay(id : Int)
+case class Underlayer(id: Int)
