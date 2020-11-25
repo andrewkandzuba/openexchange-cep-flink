@@ -1,5 +1,7 @@
 package io.openexchage.aws.s3
 
+import java.nio.charset.StandardCharsets
+
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model._
@@ -16,24 +18,26 @@ object Application {
     val s3Client = new S3Client(AmazonS3ClientBuilder.standard()
       .withCredentials(new EnvironmentVariableCredentialsProvider)
       .build())
-    val list = s3Client.list(bucketName)
-        list.foreach {
-          println
-        }
+      s3Client.keys(bucketName, (t : S3ObjectSummary) => {
+        println(t.getKey)
+      })
     
     val csvFile = "users.csv"
     val selectFromCsvQuery = "select s.ID,s.LAST_NAME from S3Object s WHERE s.FIRST_NAME='David'"
-    val json = s3Client.select(bucketName, csvFile, selectFromCsvQuery, csvInputSerialization, jsonOutputSerialization)
-    println(json)
+    s3Client.select(bucketName, csvFile, selectFromCsvQuery, csvInputSerialization, jsonOutputSerialization, (event : SelectObjectContentEvent.RecordsEvent)=>{
+      println(StandardCharsets.UTF_8.decode(event.getPayload).toString)
+    })
 
     val jsonFile = "users.json"
     val selectFromJsonQuery = "select s.ID,s.LAST_NAME from S3Object[*].users[*] s WHERE s.FIRST_NAME='Alex'"
-    val csv = s3Client.select(bucketName, jsonFile, selectFromJsonQuery, jsonInputSerialization, csvOutputSerialization)
-    println(csv)
+    s3Client.select(bucketName, jsonFile, selectFromJsonQuery, jsonInputSerialization, csvOutputSerialization,(event : SelectObjectContentEvent.RecordsEvent)=>{
+      println(StandardCharsets.UTF_8.decode(event.getPayload).toString)
+    })
 
     val noaaFile = "2287462.csv"
-    val selectWeatherQuery = "select s.STATION,s.OBSETVATIONDATE,s.REPORTTYPE,s.HourlyAltimeterSetting from s3object s limit 5"
-    val bearings = s3Client.select(bucketName, noaaFile, selectWeatherQuery, csvInputSerialization, jsonOutputSerialization)
-    println(bearings)
+    val selectWeatherQuery = "select s.station,s.observationDate,s.reportType,s.observationSource,s.hourlyDewPointTemperature,s.hourlyDryBulbTemperature,s.hourlyPrecipitation,s.hourlyRelativeHumidity,s.hourlySeaLevelPressure,s.hourlySkyConditions,s.hourlyStationPressure,s.hourlyVisibility,s.hourlyWetBulbTemperature,s.hourlyWindDirection,s.hourlyWindGustSpeed,s.hourlyWindSpeed from s3object s limit 5;"
+    s3Client.select(bucketName, noaaFile, selectWeatherQuery, csvInputSerialization, jsonOutputSerialization, (event : SelectObjectContentEvent.RecordsEvent)=>{
+      println(StandardCharsets.UTF_8.decode(event.getPayload).toString)
+    })
   }
 }

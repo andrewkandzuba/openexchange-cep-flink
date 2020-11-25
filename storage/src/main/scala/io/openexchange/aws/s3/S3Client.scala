@@ -8,12 +8,9 @@ import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.{InputSerialization, OutputSerialization, SelectObjectContentEvent, SelectObjectContentEventVisitor, _}
 import com.amazonaws.{AmazonServiceException, SdkClientException}
 
-import scala.collection.mutable.ListBuffer
-
 class S3Client(val amazonS3: AmazonS3) {
 
-  def list(bucketName: String): List[String] = {
-    val list = new ListBuffer[String]()
+  def keys(bucketName: String, process: S3ObjectSummary => Unit): Unit = {
     try {
       val req = new ListObjectsV2Request().withBucketName(bucketName).withMaxKeys(2)
       var result: ListObjectsV2Result = null
@@ -21,14 +18,15 @@ class S3Client(val amazonS3: AmazonS3) {
         result = amazonS3.listObjectsV2(req)
         result.getObjectSummaries.forEach(new Consumer[S3ObjectSummary] {
           override def accept(t: S3ObjectSummary): Unit = {
-            list += " - %s (size: %d)".format(t.getKey, t.getSize)
+            println("%s (size: %d)".format(t.getKey, t.getSize))
+            process(t)
           }
         })
 
         // If there are more than maxKeys keys in the bucket, get a continuation token
         // and list the next objects.
         val token = result.getNextContinuationToken;
-        System.out.println("Next Continuation Token: " + token);
+        println("Next Continuation Token: " + token);
         req.setContinuationToken(token);
 
       } while (result.isTruncated)
@@ -36,11 +34,11 @@ class S3Client(val amazonS3: AmazonS3) {
       case e: AmazonServiceException => e.printStackTrace(); throw e
       case e: SdkClientException => e.printStackTrace(); throw e
     }
-    list.toList
   }
 
-  def select(bucketName: String, key: String, query: String, inputSerialization: InputSerialization, outputSerialization: OutputSerialization): List[String] = {
-    val output = new ListBuffer[String]()
+  def select(bucketName: String, key: String, query: String,
+             inputSerialization: InputSerialization, outputSerialization: OutputSerialization,
+             process : SelectObjectContentEvent.RecordsEvent => Unit) {
 
     println(query)
 
@@ -66,9 +64,8 @@ class S3Client(val amazonS3: AmazonS3) {
           }
 
           override def visit(event: SelectObjectContentEvent.RecordsEvent): Unit = {
-            val s = StandardCharsets.UTF_8.decode(event.getPayload).toString
-            println("Received record: " + s)
-            output += s
+            println("Received record: " + StandardCharsets.UTF_8.decode(event.getPayload).toString)
+            process(event)
           }
         })
 
@@ -77,7 +74,6 @@ class S3Client(val amazonS3: AmazonS3) {
     finally response.close()
 
     if (!isResultComplete.get) throw new Exception("S3 Select request was incomplete as End Event was not received.")
-
-    output.toList
   }
+
 }
