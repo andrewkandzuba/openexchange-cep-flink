@@ -6,7 +6,7 @@ import java.util.UUID
 
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.internal.InputSubstream
-import com.amazonaws.services.s3.model._
+import com.amazonaws.services.s3.model.{SelectObjectContentEvent, _}
 import com.amazonaws.{AmazonServiceException, SdkClientException}
 import io.openexchange.aws.s3.S3Client
 import org.scalamock.scalatest.MockFactory
@@ -20,7 +20,10 @@ class S3ClientTest extends AnyFlatSpec with MockFactory with Matchers {
     (amazonS3Mock.listObjectsV2(_: ListObjectsV2Request)).expects(*).returning(new ListObjectsV2Result).once()
 
     val s3Client = new S3Client(amazonS3Mock)
-    val list = s3Client.list("bucketName")
+    var list : List[String] = List()
+    s3Client.keys("bucketName", (t : S3ObjectSummary) => {
+       list = t.getKey :: list
+    })
     assert(list.isEmpty)
   }
 
@@ -46,7 +49,10 @@ class S3ClientTest extends AnyFlatSpec with MockFactory with Matchers {
     (amazonS3Mock.listObjectsV2(_: ListObjectsV2Request)).expects(*).returning(result).once()
 
     val s3Client = new S3Client(amazonS3Mock)
-    val list = s3Client.list("bucketName")
+    var list : List[String] = List()
+    s3Client.keys("bucketName", (t : S3ObjectSummary) => {
+      list = t.getKey :: list
+    })
     assert(list.size == 2)
   }
 
@@ -56,7 +62,10 @@ class S3ClientTest extends AnyFlatSpec with MockFactory with Matchers {
       (amazonS3Mock.listObjectsV2(_: ListObjectsV2Request)).expects(*).throws(new AmazonServiceException("Unauthorized")).once()
 
       val s3Client = new S3Client(amazonS3Mock)
-      s3Client.list("bucketName")
+      var list : List[String] = List()
+      s3Client.keys("bucketName", (t : S3ObjectSummary) => {
+        list = t.getKey :: list
+      })
     }
   }
 
@@ -66,11 +75,14 @@ class S3ClientTest extends AnyFlatSpec with MockFactory with Matchers {
       (amazonS3Mock.listObjectsV2(_: ListObjectsV2Request)).expects(*).throws(new SdkClientException("Not found")).once()
 
       val s3Client = new S3Client(amazonS3Mock)
-      s3Client.list("bucketName")
+      var list : List[String] = List()
+      s3Client.keys("bucketName", (t : S3ObjectSummary) => {
+        list = t.getKey :: list
+      })
     }
   }
 
-  "A List" should "have length 2" in {
+  "A process" should "be triggered twice" in {
 
     val payload = Array[Byte](0, 0, 0, -121, 0, 0, 0, 85, 125, -27, 22, -112, 13, 58, 109, 101, 115, 115, 97, 103, 101, 45,
       116, 121, 112, 101, 7, 0, 5, 101, 118, 101, 110, 116, 11, 58, 101, 118, 101, 110, 116, 45, 116, 121, 112, 101, 7, 0, 7, 82,
@@ -111,9 +123,14 @@ class S3ClientTest extends AnyFlatSpec with MockFactory with Matchers {
     val bucketName = "test-select-aws-openexchange-io"
     val jsonFile = "users.json"
     val selectFromJsonQuery = "select s.ID,s.LAST_NAME from S3Object[*].users[*] s WHERE s.FIRST_NAME='Alex'"
-    val list = s3Client.select(bucketName, jsonFile, selectFromJsonQuery, new InputSerialization, new OutputSerialization)
+    var count = 0
 
-    assert(list.length == 2)
+    def process(event : SelectObjectContentEvent.RecordsEvent): Unit = {
+      count += 1
+    }
+    s3Client.select(bucketName, jsonFile, selectFromJsonQuery, new InputSerialization, new OutputSerialization, process)
+
+    assert(count == 2)
   }
 
   it should "produce Exception when select is invoked" in {
@@ -136,8 +153,11 @@ class S3ClientTest extends AnyFlatSpec with MockFactory with Matchers {
     val jsonFile = "users.json"
     val selectFromJsonQuery = "select s.ID,s.LAST_NAME from S3Object[*].users[*] s WHERE s.FIRST_NAME='Alex'"
 
+    def process(event : SelectObjectContentEvent.RecordsEvent): Unit = {
+      // NOP
+    }
     intercept[Exception] {
-      s3Client.select(bucketName, jsonFile, selectFromJsonQuery, new InputSerialization, new OutputSerialization)
+      s3Client.select(bucketName, jsonFile, selectFromJsonQuery, new InputSerialization, new OutputSerialization, process: SelectObjectContentEvent.RecordsEvent => Unit)
     }
   }
 }
