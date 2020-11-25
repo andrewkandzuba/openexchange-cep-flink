@@ -15,7 +15,6 @@ class StationBearingTest extends AnyFlatSpec with MockFactory with Matchers {
     LocalDateTime.parse("2020-06-01T00:52:00"),
     "FM-15",
     "7",
-    30.10,
     26,
     59,
     0.00,
@@ -35,7 +34,6 @@ class StationBearingTest extends AnyFlatSpec with MockFactory with Matchers {
     assert("2020-06-01T00:52".equalsIgnoreCase(stationBearing.observationDate.toString))
     assert("FM-15".eq(stationBearing.reportType))
     assert("7".eq(stationBearing.observationSource))
-    assert(30.10 == stationBearing.hourlyAltimeterSetting)
     assert(26 == stationBearing.hourlyDewPointTemperature)
     assert(59 == stationBearing.hourlyDryBulbTemperature)
     assert(0.0 == stationBearing.hourlyPrecipitation)
@@ -55,7 +53,6 @@ class StationBearingTest extends AnyFlatSpec with MockFactory with Matchers {
     LocalDateTime.parse("2020-06-01T00:52:00"),
     "FM-15",
     "7",
-    30.10,
     26,
     59,
     0.00,
