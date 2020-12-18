@@ -4,9 +4,28 @@ import org.scalamock.matchers.Matchers
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec
 
-import scala.util.parsing.json.JSON
+import java.time.LocalDateTime
 
 class StationBearingParsingTest  extends AnyFlatSpec with MockFactory with Matchers{
+
+  private val stationBearing = StationBearing(
+    "72259513911",
+    LocalDateTime.parse("2020-06-01T00:52:00"),
+    "FM-15",
+    "7",
+    26,
+    59,
+    0.00,
+    28,
+    30.04,
+    "CLR:00",
+    29.40,
+    0,
+    45,
+    170,
+    0,
+    7
+  )
 
   private val jsonRaw =
     """
@@ -30,9 +49,13 @@ class StationBearingParsingTest  extends AnyFlatSpec with MockFactory with Match
       |}
     """.stripMargin
 
-  "Test" should "be equal" in {
-    var t = JSON.parseRaw(jsonRaw)
-    var i = 10
+  "Parsed t" should "contains" in {
+    val t = JsonUtils.fromJson[StationBearing](jsonRaw)
+    assert("72259513911".eq(t.station))
   }
 
+  "JSON s" should "be equal to" in {
+    val s = JsonUtils.toJson(stationBearing)
+    assert("".eq(s))
+  }
 }
