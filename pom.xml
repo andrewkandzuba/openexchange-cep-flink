@@ -79,7 +79,7 @@ under the License.
         <maven.compiler.target>13</maven.compiler.target>
         <maven.compiler.source>13</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <flink.version>1.11.2</flink.version>
+        <flink.version>1.13.1</flink.version>
         <scala.binary.version>2.11</scala.binary.version>
         <scala.version>2.11.12</scala.version>
         <aws.sdk.version>1.11.837</aws.sdk.version>
@@ -132,13 +132,6 @@ under the License.
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.amazonaws</groupId>
-                <artifactId>aws-java-sdk-bom</artifactId>
-                <version>${aws.sdk.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <!-- Apache Flink dependencies -->
             <!-- These dependencies are provided, because they should not be packaged into the JAR file. -->
             <dependency>
@@ -160,6 +153,24 @@ under the License.
                 <artifactId>flink-test-utils_${scala.binary.version}</artifactId>
                 <version>${flink.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.flink</groupId>
+                <artifactId>flink-runtime_${scala.binary.version}</artifactId>
+                <version>${flink.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.flink</groupId>
+                <artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
+                <version>${flink.version}</version>
+                <scope>test</scope>
+                <classifier>tests</classifier>
             </dependency>
 
             <!-- Scala Library, provided by Flink as well. -->
@@ -183,6 +194,11 @@ under the License.
 
             <!-- Add logging framework, to produce console output when running in the IDE. -->
             <!-- These dependencies are excluded from the application JAR by default. -->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
@@ -236,11 +252,13 @@ under the License.
                 <scope>test</scope>
             </dependency>
 
-            <!-- logging -->
+            <!-- Amazon AWS dependencies -->
             <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-bom</artifactId>
+                <version>${aws.sdk.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
         </dependencies>
