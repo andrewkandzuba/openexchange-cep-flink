@@ -18,11 +18,13 @@
 
 package io.openexchange.flink
 
-import java.util
+import io.openexchange.flink.function.StatefulFlatMapFunction
 
-import io.openexchange.flink.function.IncrementMapFunction
+import java.util
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala._
+
+import java.util.Collections
 
 /**
  * Skeleton for a Flink Streaming Job.
@@ -47,23 +49,22 @@ object StreamingJob extends App {
 
   // create a stream of custom elements and apply transformations
   env.fromElements(1L, 21L, 22L)
-    .map(new IncrementMapFunction())
+    .flatMap(new StatefulFlatMapFunction())
     .addSink(new CollectSink())
 
   // execute program
   env.executeAsync("Flink Streaming Scala API Skeleton")
 }
 
+// create a testing sink
 class CollectSink extends SinkFunction[Long] {
 
-  override def invoke(value: Long, context: SinkFunction.Context[_]): Unit = {
-    synchronized {
-      CollectSink.values.add(value)
-    }
+  override def invoke(value: Long, context: SinkFunction.Context): Unit = {
+    CollectSink.values.add(value)
   }
 }
 
 object CollectSink {
   // must be static
-  val values: util.List[Long] = new util.ArrayList()
+  val values: util.List[Long] = Collections.synchronizedList(new util.ArrayList())
 }
