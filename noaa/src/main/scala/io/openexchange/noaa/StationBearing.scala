@@ -2,7 +2,7 @@ package io.openexchange.noaa
 
 import java.time.LocalDateTime
 
-final case class StationBearing(station: String,
+sealed case class StationBearing(station: String,
                           observationDate: LocalDateTime,
                           reportType: String,
                           observationSource: String,
