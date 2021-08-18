@@ -9,7 +9,7 @@ class StatefulFlatMapFunction extends FlatMapFunction[Long, Long] {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   override def flatMap(t: Long, collector: Collector[Long]): Unit = {
-    logger.info("Receive %i", t)
+    logger.trace("Received: {}", t)
     collector.collect(t+1)
   }
 }

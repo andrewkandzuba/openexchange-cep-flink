@@ -53,7 +53,7 @@ object StreamingJob extends App {
     .addSink(new CollectSink())
 
   // execute program
-  env.executeAsync("Flink Streaming Scala API Skeleton")
+  env.execute("Flink Streaming Scala API Skeleton")
 }
 
 // create a testing sink
