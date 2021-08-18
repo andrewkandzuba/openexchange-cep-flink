@@ -57,6 +57,10 @@ under the License.
             <groupId>org.scalamock</groupId>
             <artifactId>scalamock_${scala.binary.version}</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
