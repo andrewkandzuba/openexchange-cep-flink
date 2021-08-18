@@ -1,13 +1,13 @@
 package io.openexchange.aws.s3
 
-import java.io.ByteArrayInputStream
-
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.internal.InputSubstream
-import com.amazonaws.services.s3.model.{SelectObjectContentEvent, SelectObjectContentEventStream, SelectObjectContentRequest, SelectObjectContentResult}
+import com.amazonaws.services.s3.model.{SelectObjectContentEventStream, SelectObjectContentRequest, SelectObjectContentResult}
 import org.scalamock.matchers.Matchers
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec
+
+import java.io.ByteArrayInputStream
 
 class StationMeasuresTest extends AnyFlatSpec with MockFactory with Matchers {
 
@@ -49,12 +49,8 @@ class StationMeasuresTest extends AnyFlatSpec with MockFactory with Matchers {
     val selectObjectContentResult = new SelectObjectContentResult().withPayload(selectObjectContentEventStream)
     (amazonS3Mock.selectObjectContent(_: SelectObjectContentRequest)).expects(*).returning(selectObjectContentResult).once()
 
-    var count = 0
-    stationStore.search("select * from stations", (event: SelectObjectContentEvent.RecordsEvent) => {
-      println(event)
-      count += 1
-    })
-    assert(count == 2)
+    val list = stationStore.search("select * from stations")
+    assert(list.size == 2)
   }
 
 }

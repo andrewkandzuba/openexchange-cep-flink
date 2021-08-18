@@ -3,7 +3,6 @@ package com.amazonaws.internal
 import java.io.ByteArrayInputStream
 import java.util
 import java.util.UUID
-
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.internal.InputSubstream
 import com.amazonaws.services.s3.model.{SelectObjectContentEvent, _}

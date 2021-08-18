@@ -1,12 +1,12 @@
 package io.openexchange.aws.s3
 
-import java.nio.charset.StandardCharsets
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.function.Consumer
-
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.{InputSerialization, OutputSerialization, SelectObjectContentEvent, SelectObjectContentEventVisitor, _}
 import com.amazonaws.{AmazonServiceException, SdkClientException}
+
+import java.nio.charset.StandardCharsets
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.function.Consumer
 
 class S3Client(val amazonS3: AmazonS3) {
 

@@ -1,7 +1,6 @@
 package io.openexchage.aws.s3
 
 import java.nio.charset.StandardCharsets
-
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model._
