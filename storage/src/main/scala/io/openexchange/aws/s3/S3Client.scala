@@ -41,7 +41,7 @@ class S3Client(val amazonS3: AmazonS3) {
 
   def select(bucketName: String, key: String, query: String,
              inputSerialization: InputSerialization, outputSerialization: OutputSerialization,
-             process : SelectObjectContentEvent.RecordsEvent => Unit) {
+             process : SelectObjectContentEvent.RecordsEvent => Unit): Unit = {
 
     logger.debug(query)
 
@@ -62,16 +62,17 @@ class S3Client(val amazonS3: AmazonS3) {
           }
 
           override def visit(event: SelectObjectContentEvent.EndEvent): Unit = {
-            isResultComplete.set(true)
             logger.debug("Received End Event. Result is complete.")
+            isResultComplete.set(true)
           }
 
           override def visit(event: SelectObjectContentEvent.RecordsEvent): Unit = {
             logger.debug("Received record: {}",  StandardCharsets.UTF_8.decode(event.getPayload).toString)
+            event.getPayload.position(0)
             process(event)
           }
         })
-
+      
       scala.io.Source.fromInputStream(inputStream).mkString
     }
     finally response.close()

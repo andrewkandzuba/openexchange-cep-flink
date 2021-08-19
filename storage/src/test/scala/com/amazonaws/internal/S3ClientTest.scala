@@ -29,10 +29,12 @@ class S3ClientTest extends AnyFlatSpec with MockFactory with Matchers {
   "A List" should "have size 2" in {
     val obj1 = new S3ObjectSummary
     obj1.setBucketName("bucket1")
+    obj1.setKey("1")
     obj1.setSize(1000)
 
     val obj2 = new S3ObjectSummary
     obj2.setBucketName("bucket2")
+    obj2.setKey("2")
     obj2.setSize(2000)
 
     val objList = new util.ArrayList[S3ObjectSummary]()
