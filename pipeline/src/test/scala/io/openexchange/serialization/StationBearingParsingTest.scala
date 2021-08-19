@@ -1,5 +1,6 @@
-package io.openexchange.noaa
+package io.openexchange.serialization
 
+import io.openexchange.noaa.StationBearing
 import org.scalamock.matchers.Matchers
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec

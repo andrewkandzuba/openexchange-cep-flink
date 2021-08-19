@@ -19,23 +19,23 @@ class StatefulFlatMapFunctionTest extends AnyFlatSpec with Matchers with BeforeA
     testHarness = new OneInputStreamOperatorTestHarness[Long, Long](new StreamFlatMap(statefulFlatMap))
 
     // optionally configured the execution environment
-    testHarness.getExecutionConfig.setAutoWatermarkInterval(50);
+    testHarness.getExecutionConfig.setAutoWatermarkInterval(50)
 
     // open the test harness (will also call open() on RichFunctions)
-    testHarness.open();
+    testHarness.open()
   }
 
   "StatefulFlatMap" should "do some fancy stuff with timers and state" in {
 
 
     //push (timestamped) elements into the operator (and hence user defined function)
-    testHarness.processElement(2, 100);
+    testHarness.processElement(2, 100)
 
     //trigger event time timers by advancing the event time of the operator with a watermark
-    testHarness.processWatermark(100);
+    testHarness.processWatermark(100)
 
-    //trigger proccesign time timers by advancing the processing time of the operator directly
-    testHarness.setProcessingTime(100);
+    //trigger processing time timers by advancing the processing time of the operator directly
+    testHarness.setProcessingTime(100)
 
     //retrieve list of emitted records for assertions
     testHarness.extractOutputValues() should contain (3)
